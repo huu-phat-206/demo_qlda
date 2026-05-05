@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salon Nàng Thơ - Điểm Hẹn Phái Đẹp</title>
+    <!-- Font chữ từ Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Quicksand:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- LIÊN KẾT FILE CSS TÊN LÀ SALON.CSS -->
+    <link rel="stylesheet" href="salon.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo">🌸 Salon Nàng Thơ</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home">Trang chủ</a></li>
+                <li><a href="#services">Dịch vụ</a></li>
+                <li><a href="#booking" class="btn-book-nav">Đặt lịch</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Tỏa sáng theo cách của nàng</h1>
+            <p>Không gian làm đẹp tinh tế, nhẹ nhàng. Nơi mái tóc của bạn được nâng niu bởi những đôi bàn tay tâm huyết
+                nhất.</p>
+            <a href="#booking" class="btn-main">Ghé thăm chúng mình ✨</a>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <h2>Dịch Vụ Yêu Thích</h2>
+        <div class="service-cards">
+            <div class="card">
+                <div class="card-icon">💇‍♀️</div>
+                <h3>Cắt Tóc Design</h3>
+                <p>Cập nhật những xu hướng tóc mới nhất phù hợp với gương mặt.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">✨</div>
+                <h3>Phục Hồi Collagen</h3>
+                <p>Cho mái tóc mềm mượt, óng ả như nhung ngay từ lần đầu.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎀</div>
+                <h3>Uốn/Duỗi Cao Cấp</h3>
+                <p>Sử dụng thuốc chuẩn salon, bảo vệ tối đa cấu trúc tóc.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="booking" class="booking">
+        <div class="booking-container">
+            <h2>Gửi Lịch Hẹn Cho Salon</h2>
+            <form id="bookingForm">
+                <div class="input-group">
+                    <label>Tên của nàng</label>
+                    <input type="text" id="name" placeholder="Ví dụ: Anh Thư..." required>
+                </div>
+                <div class="input-group">
+                    <label>Số điện thoại</label>
+                    <input type="tel" id="phone" placeholder="09xxxx..." required>
+                </div>
+                <div class="input-group">
+                    <label>Chọn dịch vụ</label>
+                    <select id="service" required>
+                        <option value="">-- Chọn dịch vụ --</option>
+                        <option value="cut">Cắt & Tạo kiểu</option>
+                        <option value="color">Nhuộm thời trang</option>
+                        <option value="spa">Gội đầu dưỡng sinh</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">Xác nhận đặt lịch 💖</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Salon Nàng Thơ - Thiết kế dành riêng cho phái đẹp 🌷</p>
+    </footer>
+
+    <!-- LIÊN KẾT FILE JS TÊN LÀ SALON.JS -->
+    <script src="salon.js"></script>
+</body>
+
+</html>
