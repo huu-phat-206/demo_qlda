@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salon Nàng Thơ - Ultimate Pro Max - Nhóm 16</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --pink-soft: #fff0f3;
+            --pink-medium: #ffb3c1;
+            --pink-strong: #fb6f92;
+            --text-dark: #594145;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(251, 111, 146, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            background-color: #fdfafb;
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* AUTHENTICATION */
+        #auth-container {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--pink-soft);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-box {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 30px;
+            width: 420px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .auth-box h2 {
+            font-family: 'Playfair Display';
+            color: var(--pink-strong);
+            margin-bottom: 25px;
+        }
+
+        .auth-box input,
+        .auth-box select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--pink-medium);
+            border-radius: 12px;
+            outline: none;
+        }
+
+        .btn-pink {
+            width: 100%;
+            padding: 12px;
+            background: var(--pink-strong);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* SYSTEM LAYOUT */
+        #system-layout {
+            display: none;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 2px solid var(--pink-soft);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-family: 'Playfair Display';
+            font-size: 24px;
+            color: var(--pink-strong);
+            font-weight: 700;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .nav-link {
+            padding: 12px 15px;
+            display: none;
+            text-decoration: none;
+            color: var(--text-dark);
+            border-radius: 12px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            background: var(--pink-soft);
+            color: var(--pink-strong);
+            display: block;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 50px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--pink-soft);
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--pink-strong);
+            font-weight: 700;
+        }
+
+        .alert-box {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffc107;
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .bg-red {
+            background: #e74c3c;
+        }
+
+        .bg-green {
+            background: #2ecc71;
+        }
+
+        .bg-blue {
+            background: #3498db;
+        }
+
+        .bg-pink {
+            background: #fb6f92;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="auth-container">
+        <div class="auth-box">
+            <h2 id="auth-title">🌸 Đăng Nhập</h2>
+            <input type="text" id="a-user" placeholder="Tên đăng nhập">
+            <input type="password" id="a-pass" placeholder="Mật khẩu">
+            <div id="reg-fields" class="hidden">
+                <input type="text" id="a-name" placeholder="Họ và tên">
+                <select id="a-role">
+                    <option value="customer">Khách Hàng (Nàng)</option>
+                    <option value="stylist">Thợ Tóc </option>
+                    <option value="admin">Quản Lý </option>
+                </select>
+            </div>
+            <button class="btn-pink" onclick="handleAuth()">Xác nhận ✨</button>
+            <p onclick="toggleMode()"
+                style="font-size:13px; cursor:pointer; color:var(--pink-strong); margin-top:15px; text-decoration: underline;">
+                <span id="t-text">Chưa có tài khoản? Đăng ký</span>
+            </p>
+        </div>
+        <button onclick="localStorage.clear(); location.reload();"
+            style="margin-top:20px; background:none; border:none; color:#888; font-size:11px; cursor:pointer;">[Reset Hệ
+            Thống]</button>
+    </div>
+
+    <div id="system-layout">
+        <div class="sidebar">
+            <div class="logo">🌸 Nàng Thơ</div>
+            <a href="javascript:void(0)" class="nav-link" id="m-booking" onclick="nav('booking')">📅 Lịch Hẹn</a>
+            <a href="javascript:void(0)" class="nav-link" id="m-pos" onclick="nav('pos')">💰 Tính Tiền (POS)</a>
+            <a href="javascript:void(0)" class="nav-link" id="m-inventory" onclick="nav('inventory')">📦 Kho & Nhập
+                Hàng</a>
+            <a href="javascript:void(0)" class="nav-link" id="m-personal" onclick="nav('personal')">🎨 Doanh Số Cá
+                Nhân</a>
+            <a href="javascript:void(0)" class="nav-link" id="m-tax" onclick="nav('tax')">📊 Báo Cáo Thuế</a>
+            <button class="btn-pink" onclick="location.reload()"
+                style="margin-top:auto; background:#8e7377;">Thoát</button>
+        </div>
+
+        <div class="main-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+                <h1 id="v-title">Dashboard</h1>
+                <div id="u-display"
+                    style="font-weight:700; color:var(--pink-strong); background:white; padding:8px 15px; border-radius:12px; box-shadow:var(--shadow);">
+                </div>
+            </div>
+
+            <!-- BOOKING VIEW -->
+            <div id="view-booking" class="view hidden">
+                <div class="card" id="bk-input-area">
+                    <h3 id="bk-msg">Đặt lịch mới</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:15px;">
+                        <input type="text" id="bk-name" placeholder="Tên khách hàng">
+                        <input type="text" id="bk-phone" placeholder="Số điện thoại">
+                        <input type="time" id="bk-time" value="09:00">
+                    </div>
+                    <button class="btn-pink" style="width:auto; padding:10px 25px; margin-top:10px;"
+                        onclick="addBooking()">Xác nhận lịch hẹn</button>
+                </div>
+                <div class="card">
+                    <h3>Danh sách lịch trình Salon</h3>
+                    <table id="table-bk">
+                        <thead>
+                            <tr>
+                                <th>Giờ</th>
+                                <th>Khách hàng</th>
+                                <th>SĐT</th>
+                                <th>Phân loại</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- POS VIEW (ADMIN ONLY) -->
+            <div id="view-pos" class="view hidden">
+                <div class="card">
+                    <h3>Xuất hóa đơn thanh toán</h3>
+                    <p style="font-size:13px; color:#888;">Hoa hồng thợ: 50% | Thuế: 3% tính trên tổng doanh thu</p>
+                    <input type="number" id="p-amount" placeholder="Số tiền thanh toán (VNĐ)" style="margin-top:15px;">
+                    <select id="p-stylist-list" style="margin-top:10px;"></select>
+                    <button class="btn-pink" onclick="saveInvoice()" style="margin-top:10px;">Thanh toán & Lưu Doanh
+                        Thu</button>
+                </div>
+            </div>
+
+            <!-- INVENTORY VIEW (ADMIN ONLY) -->
+            <div id="view-inventory" class="view hidden">
+                <div id="stock-alert-box" class="hidden"></div>
+                <div class="card">
+                    <h3>Nhập hóa đơn vật tư (Cộng dồn kho)</h3>
+                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; margin-top:10px;">
+                        <input type="text" id="inv-item" placeholder="Tên sản phẩm">
+                        <input type="number" id="inv-q" placeholder="Số lượng">
+                        <input type="number" id="inv-c" placeholder="Giá nhập (VNĐ)">
+                    </div>
+                    <button class="btn-pink" onclick="updateStock()" style="margin-top:10px;">Cập nhật kho & Chi
+                        phí</button>
+                </div>
+                <div class="card">
+                    <h3>Tồn kho hiện tại</h3>
+                    <table id="table-inventory">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Tổng tồn</th>
+                                <th>Giá nhập</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PERSONAL VIEW (STYLIST ONLY) -->
+            <div id="view-personal" class="view hidden">
+                <div class="card" style="text-align:center;">
+                    <h3>Hoa hồng bạn nhận được (50% doanh thu)</h3>
+                    <div id="stylist-money"
+                        style="font-size:48px; font-weight:bold; color:var(--pink-strong); margin:20px 0;">0đ</div>
+                    <p style="color:#666;">Số tiền thực nhận sau khi chia đôi với chủ Salon.</p>
+                </div>
+            </div>
+
+            <!-- TAX REPORT VIEW (ADMIN ONLY) -->
+            <div id="view-tax" class="view hidden">
+                <div class="card"
+                    style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; text-align:center;">
+                    <div>
+                        <h4>Doanh Thu (POS)</h4>
+                        <p id="t-rev" style="color:#2ecc71; font-size:24px; font-weight:700;">0đ</p>
+                    </div>
+                    <div>
+                        <h4>Chi Phí (Nhập)</h4>
+                        <p id="t-exp" style="color:#e74c3c; font-size:24px; font-weight:700;">0đ</p>
+                    </div>
+                    <div>
+                        <h4>Thuế Phải Nộp (3%)</h4>
+                        <p id="t-tax" style="color:#3498db; font-size:24px; font-weight:700;">0đ</p>
+                    </div>
+                </div>
+                <button class="btn-pink" onclick="alert('Đã kết xuất dữ liệu mẫu TT88 ra file Excel!')">Xuất Báo Cáo
+                    Thuế</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE = 'SALON_PROMAX_DB';
+        let isReg = false; let currentUser = null;
+
+        function getDB() { return JSON.parse(localStorage.getItem(STORAGE)) || { users: [], bookings: [], invoices: [], stock: [] }; }
+        function saveDB(db) { localStorage.setItem(STORAGE, JSON.stringify(db)); }
+
+        function toggleMode() {
+            isReg = !isReg;
+            document.getElementById('auth-title').innerText = isReg ? "🎀 Đăng Ký" : "🌸 Đăng Nhập";
+            document.getElementById('reg-fields').classList.toggle('hidden', !isReg);
+            document.getElementById('t-text').innerText = isReg ? "Quay lại đăng nhập" : "Chưa có tài khoản? Đăng ký";
+        }
+
+        function handleAuth() {
+            const u = document.getElementById('a-user').value.trim();
+            const p = document.getElementById('a-pass').value.trim();
+            let db = getDB();
+
+            if (isReg) {
+                const n = document.getElementById('a-name').value.trim();
+                const r = document.getElementById('a-role').value;
+                if (!u || !p || !n) return alert("Nàng/Bạn vui lòng điền đủ thông tin!");
+                db.users.push({ u, p, n, r }); saveDB(db);
+                alert("Đăng ký thành công!"); toggleMode();
+            } else {
+                const found = db.users.find(x => x.u === u && x.p === p);
+                if (found) {
+                    currentUser = found;
+                    document.getElementById('auth-container').style.display = 'none';
+                    document.getElementById('system-layout').style.display = 'flex';
+                    initDashboard();
+                } else alert("Sai tài khoản hoặc mật khẩu rồi!");
+            }
+        }
+
+        function initDashboard() {
+            const msg = currentUser.r === 'customer' ? `Chào Nàng, ${currentUser.n}` : `Chào bạn, ${currentUser.n}`;
+            document.getElementById('u-display').innerText = msg;
+            document.querySelectorAll('.nav-link').forEach(l => l.style.display = 'none');
+
+            const perms = {
+                admin: ['m-booking', 'm-pos', 'm-inventory', 'm-tax'],
+                stylist: ['m-booking', 'm-personal'],
+                customer: ['m-booking']
+            };
+
+            perms[currentUser.r].forEach(id => document.getElementById(id).style.display = 'block');
+
+            // QUY ĐỊNH: Thợ tóc không được đặt lịch
+            document.getElementById('bk-input-area').classList.toggle('hidden', currentUser.r === 'stylist');
+            document.getElementById('bk-msg').innerText = currentUser.r === 'admin' ? "Quản lý đặt lịch giùm (SĐT)" : "Đặt lịch làm đẹp trực tuyến";
+
+            let db = getDB();
+            const select = document.getElementById('p-stylist-list');
+            select.innerHTML = '<option value="">-- Chọn thợ chính --</option>' +
+                db.users.filter(x => x.r === 'stylist').map(x => `<option value="${x.n}">${x.n}</option>`).join('');
+
+            nav(perms[currentUser.r][0].replace('m-', ''));
+        }
+
+        function nav(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('view-' + id).classList.remove('hidden');
+            document.getElementById('m-' + id).classList.add('active');
+            document.getElementById('v-title').innerText = document.getElementById('m-' + id).innerText;
+
+            if (id === 'booking') renderBookings();
+            if (id === 'inventory') renderStockTable();
+            if (id === 'personal') renderMyMoney();
+            if (id === 'tax') renderTaxReports();
+        }
+
+        function addBooking() {
+            const time = document.getElementById('bk-time').value;
+            let db = getDB();
+            if (db.bookings.some(b => b.time === time)) return alert(`⚠️ Giờ ${time} đã có lịch rồi!`);
+
+            // FIX: PHÂN LOẠI NGUỒN GỐC ĐẶT LỊCH
+            const type = currentUser.r === 'admin' ? 'Đặt giùm qua SĐT' : 'Đặt qua Web';
+
+            db.bookings.push({
+                client: document.getElementById('bk-name').value,
+                time,
+                phone: document.getElementById('bk-phone').value,
+                owner: currentUser.n,
+                type: type
+            });
+            saveDB(db); renderBookings(); alert("Đã ghi nhận lịch hẹn!");
+            document.getElementById('bk-name').value = ""; document.getElementById('bk-phone').value = "";
+        }
+
+        function renderBookings() {
+            let db = getDB();
+            let data = currentUser.r === 'customer' ? db.bookings.filter(x => x.owner === currentUser.n) : db.bookings;
+            document.querySelector('#table-bk tbody').innerHTML = data.map(b => `<tr><td>${b.time}</td><td>${b.client}</td><td>${b.phone || '-'}</td><td><span class="badge ${b.type.includes('SĐT') ? 'bg-pink' : 'bg-blue'}">${b.type}</span></td></tr>`).join('');
+        }
+
+        // FIX: CỘNG DỒN DOANH THU CHUẨN
+        function saveInvoice() {
+            const price = parseInt(document.getElementById('p-amount').value);
+            const sName = document.getElementById('p-stylist-list').value;
+            if (!price || !sName) return alert("Nhập đủ tiền và chọn thợ!");
+            let db = getDB();
+            db.invoices.push({ price, stylist: sName, date: new Date().toLocaleDateString() });
+            saveDB(db);
+            alert("Thanh toán thành công! Doanh thu đã được cộng.");
+            document.getElementById('p-amount').value = "";
+            renderTaxReports(); // Cập nhật số liệu ngay
+        }
+
+        function updateStock() {
+            const name = document.getElementById('inv-item').value.trim();
+            const qty = parseInt(document.getElementById('inv-q').value);
+            const cost = parseInt(document.getElementById('inv-c').value);
+            if (!name || isNaN(qty)) return alert("Nhập đủ thông tin kho!");
+
+            let db = getDB();
+            let item = db.stock.find(s => s.name.toLowerCase() === name.toLowerCase());
+            if (item) { item.qty += qty; item.cost = cost; }
+            else { db.stock.push({ name, qty, cost }); }
+
+            saveDB(db); renderStockTable(); renderTaxReports(); alert("Đã cập nhật kho!");
+            document.getElementById('inv-item').value = ""; document.getElementById('inv-q').value = ""; document.getElementById('inv-c').value = "";
+        }
+
+        function renderStockTable() {
+            let db = getDB();
+            const alertBox = document.getElementById('stock-alert-box');
+            document.querySelector('#table-inventory tbody').innerHTML = db.stock.map(s => `<tr><td>${s.name}</td><td><strong>${s.qty}</strong></td><td>${s.cost.toLocaleString()}đ</td><td><span class="badge ${s.qty < 5 ? 'bg-red' : 'bg-green'}">${s.qty < 5 ? 'Sắp hết' : 'Tốt'}</span></td></tr>`).join('');
+
+            const low = db.stock.filter(s => s.qty < 5);
+            if (low.length > 0) {
+                alertBox.className = "alert-box";
+                alertBox.innerHTML = `⚠️ CẢNH BÁO: ${low.map(x => x.name).join(', ')} sắp hết hàng!`;
+            } else alertBox.className = "hidden";
+        }
+
+        function renderMyMoney() {
+            let db = getDB();
+            const total = db.invoices.filter(x => x.stylist === currentUser.n).reduce((s, x) => s + x.price, 0);
+            document.getElementById('stylist-money').innerText = (total * 0.5).toLocaleString() + 'đ';
+        }
+
+        // FIX: TÍNH THUẾ VÀ DOANH THU KHÔNG LỖI
+        function renderTaxReports() {
+            let db = getDB();
+            const rev = db.invoices.reduce((s, x) => s + (parseInt(x.price) || 0), 0);
+            const exp = db.stock.reduce((s, x) => s + (parseInt(x.cost) || 0), 0);
+
+            document.getElementById('t-rev').innerText = rev.toLocaleString() + 'đ';
+            document.getElementById('t-exp').innerText = exp.toLocaleString() + 'đ';
+            document.getElementById('t-tax').innerText = (rev * 0.03).toLocaleString() + 'đ';
+        }
+    </script>
+</body>
+
+</html>
