@@ -16,7 +16,7 @@ CREATE TABLE STAFFS (
     staff_code VARCHAR2(20) UNIQUE NOT NULL, -- Ví dụ: NV001
     full_name NVARCHAR2(100) NOT NULL,
     phone_number VARCHAR2(15),
-    role VARCHAR2(50), -- Stylist (Thợ chính), Assistant (Thợ phụ), Cashier, Manager
+    role VARCHAR2(50), -- Stylist, Cashier, Manager
     base_salary NUMBER(15, 2) DEFAULT 0,
     is_active NUMBER(1) DEFAULT 1, -- 1: Đang làm việc, 0: Đã nghỉ
     created_at DATE DEFAULT SYSDATE
