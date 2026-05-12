@@ -198,29 +198,19 @@
 
 <body>
 
-    <div id="auth-container">
-        <div class="auth-box">
-            <h2 id="auth-title">🌸 Đăng Nhập</h2>
-            <input type="text" id="a-user" placeholder="Tên đăng nhập">
-            <input type="password" id="a-pass" placeholder="Mật khẩu">
-            <div id="reg-fields" class="hidden">
-                <input type="text" id="a-name" placeholder="Họ và tên">
-                <select id="a-role">
-                    <option value="customer">Khách Hàng (Nàng)</option>
-                    <option value="stylist">Thợ Tóc </option>
-                    <option value="admin">Quản Lý </option>
-                </select>
-            </div>
-            <button class="btn-pink" onclick="handleAuth()">Xác nhận ✨</button>
-            <p onclick="toggleMode()"
-                style="font-size:13px; cursor:pointer; color:var(--pink-strong); margin-top:15px; text-decoration: underline;">
-                <span id="t-text">Chưa có tài khoản? Đăng ký</span>
-            </p>
-        </div>
-        <button onclick="localStorage.clear(); location.reload();"
-            style="margin-top:20px; background:none; border:none; color:#888; font-size:11px; cursor:pointer;">[Reset Hệ
-            Thống]</button>
-    </div>
+    <section id="secLogin">
+        <h2>Đăng Nhập Hệ Thống</h2>
+        <form id="frmLogin">
+            <label>Tài khoản:</label>
+            <input type="text" id="inpUsername" placeholder="Nhập tài khoản"><br><br>
+            
+            <label>Mật khẩu:</label>
+            <input type="password" id="inpPassword" placeholder="Nhập mật khẩu"><br><br>
+            
+            <button type="button" id="btnLoginSubmit">Đăng Nhập</button>
+            <p id="lblLoginError" style="color: red; display: none;"></p>
+        </form>
+    </section>
 
     <div id="system-layout">
         <div class="sidebar">
@@ -256,62 +246,89 @@
                     <button class="btn-pink" style="width:auto; padding:10px 25px; margin-top:10px;"
                         onclick="addBooking()">Xác nhận lịch hẹn</button>
                 </div>
-                <div class="card">
-                    <h3>Danh sách lịch trình Salon</h3>
-                    <table id="table-bk">
-                        <thead>
-                            <tr>
-                                <th>Giờ</th>
-                                <th>Khách hàng</th>
-                                <th>SĐT</th>
-                                <th>Phân loại</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
+
+                <div class="schedule-container" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin: 20px;">
+                <h2 style="font-family: sans-serif; color: #4a4a4a; margin-bottom: 25px;">Danh sách lịch trình Salon</h2>
+                
+                <table style="width: 100%; border-collapse: collapse; font-family: sans-serif;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 1px solid #f0f0f0;">
+                            <th style="color: #ff85a2; padding: 10px; font-weight: 500;">Giờ</th>
+                            <th style="color: #ff85a2; padding: 10px; font-weight: 500;">Khách hàng</th>
+                            <th style="color: #ff85a2; padding: 10px; font-weight: 500;">SĐT</th>
+                            <th style="color: #ff85a2; padding: 10px; font-weight: 500;">Phân loại</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body">
+                        <!-- Dữ liệu từ Java sẽ được đổ vào đây -->
+                    </tbody>
+                </table>
+            </div>       
             </div>
 
             <!-- POS VIEW (ADMIN ONLY) -->
             <div id="view-pos" class="view hidden">
-                <div class="card">
-                    <h3>Xuất hóa đơn thanh toán</h3>
-                    <p style="font-size:13px; color:#888;">Hoa hồng thợ: 50% | Thuế: 3% tính trên tổng doanh thu</p>
-                    <input type="number" id="p-amount" placeholder="Số tiền thanh toán (VNĐ)" style="margin-top:15px;">
-                    <select id="p-stylist-list" style="margin-top:10px;"></select>
-                    <button class="btn-pink" onclick="saveInvoice()" style="margin-top:10px;">Thanh toán & Lưu Doanh
-                        Thu</button>
+                <div class="pos-section" style="background: white; padding: 20px; border-radius: 15px;">
+                    <h3 style="margin-bottom: 15px;">Xuất hóa đơn thanh toán</h3>
+                    <p style="font-size: 0.85em; color: #888; margin-bottom: 15px;">Hoa hồng thợ: 50% | Thuế: 3% tính trên tổng doanh thu</p>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <!-- Ô nhập số tiền[cite: 1] -->
+                        <input id="pos-amount" type="number" placeholder="Tổng tiền" style="flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        
+                        <!-- Dropdown chọn thợ (Bạn cần ID thợ từ bảng STAFFS)[cite: 1] -->
+                        <select id="pos-staff" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="1">Thợ chính (NV001)</option>
+                            <option value="2">Thợ phụ (NV002)</option>
+                        </select>
+                    </div>
+
+                    <button onclick="saveInvoice()" style="width: 100%; padding: 15px; background: #ff85a2; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                        Thanh toán & Lưu Doanh Thu
+                    </button>
                 </div>
             </div>
 
             <!-- INVENTORY VIEW (ADMIN ONLY) -->
             <div id="view-inventory" class="view hidden">
-                <div id="stock-alert-box" class="hidden"></div>
-                <div class="card">
-                    <h3>Nhập hóa đơn vật tư (Cộng dồn kho)</h3>
-                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; margin-top:10px;">
-                        <input type="text" id="inv-item" placeholder="Tên sản phẩm">
-                        <input type="number" id="inv-q" placeholder="Số lượng">
-                        <input type="number" id="inv-c" placeholder="Giá nhập (VNĐ)">
+                
+                <!-- Khối Nhập Hàng -->
+                <div class="input-section" style="background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #4a4a4a;">Nhập hóa đơn vật tư (Cộng dồn kho)</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <!-- Gán ID chính xác để JavaScript không bị lỗi null -->
+                        <input id="mat-name" type="text" placeholder="Tên sản phẩm" style="flex: 2; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        <input id="mat-qty" type="number" placeholder="Số lượng" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        <input id="mat-price" type="number" placeholder="Giá nhập (VNĐ)" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
                     </div>
-                    <button class="btn-pink" onclick="updateStock()" style="margin-top:10px;">Cập nhật kho & Chi
-                        phí</button>
+                    <button onclick="updateStock()" style="width: 100%; padding: 12px; background: #ff85a2; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                        Cập nhật kho & Chi phí
+                    </button>
                 </div>
-                <div class="card">
-                    <h3>Tồn kho hiện tại</h3>
-                    <table id="table-inventory">
+
+                <!-- Khối Hiển Thị Tồn Kho -->
+                <div class="stock-section" style="background: white; padding: 20px; border-radius: 15px;">
+                    <h3 style="margin-bottom: 20px; color: #4a4a4a;">Tồn kho hiện tại</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
                         <thead>
-                            <tr>
-                                <th>Sản phẩm</th>
-                                <th>Tổng tồn</th>
-                                <th>Giá nhập</th>
-                                <th>Trạng thái</th>
+                            <tr style="color: #ff85a2; text-align: left; border-bottom: 1px solid #eee;">
+                                <th style="padding: 10px;">Sản phẩm</th>
+                                <th style="padding: 10px;">Tổng tồn</th>
+                                <th style="padding: 10px;">Giá nhập</th>
+                                <th style="padding: 10px;">Trạng thái</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <!-- Quan trọng: ID stock-body để JS đổ dữ liệu vào -->
+                        <tbody id="stock-body">
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 20px; color: #999;">Đang tải dữ liệu kho...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
+
+                 
 
             <!-- PERSONAL VIEW (STYLIST ONLY) -->
             <div id="view-personal" class="view hidden">
@@ -325,182 +342,392 @@
 
             <!-- TAX REPORT VIEW (ADMIN ONLY) -->
             <div id="view-tax" class="view hidden">
-                <div class="card"
-                    style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; text-align:center;">
-                    <div>
-                        <h4>Doanh Thu (POS)</h4>
-                        <p id="t-rev" style="color:#2ecc71; font-size:24px; font-weight:700;">0đ</p>
-                    </div>
-                    <div>
-                        <h4>Chi Phí (Nhập)</h4>
-                        <p id="t-exp" style="color:#e74c3c; font-size:24px; font-weight:700;">0đ</p>
-                    </div>
-                    <div>
-                        <h4>Thuế Phải Nộp (3%)</h4>
-                        <p id="t-tax" style="color:#3498db; font-size:24px; font-weight:700;">0đ</p>
-                    </div>
+                <div class="report-box">
+                    <p>Doanh Thu (POS)</p>
+                    <h2 id="report-revenue">0đ</h2>
                 </div>
-                <button class="btn-pink" onclick="alert('Đã kết xuất dữ liệu mẫu TT88 ra file Excel!')">Xuất Báo Cáo
-                    Thuế</button>
+                <div class="report-box">
+                    <p>Chi Phí (Nhập)</p>
+                    <h2 id="report-expense" style="color: #e74c3c;">0đ</h2>
+                </div>
+                <div class="report-box">
+                    <p>Thuế Phải Nộp (3%)</p>
+                    <h2 id="report-tax" style="color: #3498db;">0đ</h2>
+                </div>
+
+                <!-- Nút xuất file báo cáo -->
+                <button onclick="exportTaxReport()" style="width: 100%; padding: 15px; background: #ff85a2; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s;">
+                    📥 Xuất Báo Cáo Thuế (Dữ liệu thực tế)
+                </button>
             </div>
+
+            
         </div>
     </div>
 
     <script>
-        const STORAGE = 'SALON_PROMAX_DB';
-        let isReg = false; let currentUser = null;
+    // Sự kiện xử lý đăng nhập đẩy xuống Java Backend
+    document.getElementById('btnLoginSubmit').addEventListener('click', function LoginSubmitEventHandler(e) {
+        e.preventDefault();
 
-        function getDB() { return JSON.parse(localStorage.getItem(STORAGE)) || { users: [], bookings: [], invoices: [], stock: [] }; }
-        function saveDB(db) { localStorage.setItem(STORAGE, JSON.stringify(db)); }
+        const usernameInput = document.getElementById('inpUsername').value;
+        const passwordInput = document.getElementById('inpPassword').value;
+        const errorLabel = document.getElementById('lblLoginError');
 
-        function toggleMode() {
-            isReg = !isReg;
-            document.getElementById('auth-title').innerText = isReg ? "🎀 Đăng Ký" : "🌸 Đăng Nhập";
-            document.getElementById('reg-fields').classList.toggle('hidden', !isReg);
-            document.getElementById('t-text').innerText = isReg ? "Quay lại đăng nhập" : "Chưa có tài khoản? Đăng ký";
-        }
+        // Đóng gói dữ liệu để gửi đi
+        const formData = new URLSearchParams();
+        formData.append('username', usernameInput);
+        formData.append('password', passwordInput);
 
-        function handleAuth() {
-            const u = document.getElementById('a-user').value.trim();
-            const p = document.getElementById('a-pass').value.trim();
-            let db = getDB();
-
-            if (isReg) {
-                const n = document.getElementById('a-name').value.trim();
-                const r = document.getElementById('a-role').value;
-                if (!u || !p || !n) return alert("Nàng/Bạn vui lòng điền đủ thông tin!");
-                db.users.push({ u, p, n, r }); saveDB(db);
-                alert("Đăng ký thành công!"); toggleMode();
-            } else {
-                const found = db.users.find(x => x.u === u && x.p === p);
-                if (found) {
-                    currentUser = found;
-                    document.getElementById('auth-container').style.display = 'none';
-                    document.getElementById('system-layout').style.display = 'flex';
-                    initDashboard();
-                } else alert("Sai tài khoản hoặc mật khẩu rồi!");
+        // Gọi API của Java
+        fetch('../api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData.toString()
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Sai tài khoản hoặc mật khẩu!");
             }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                errorLabel.style.display = 'none';
+                const authorizedRole = data.role; // Lấy quyền hạn từ Database trả về
+
+                // 1. Chuyển đổi màn hình (Sử dụng 'flex' để tương thích với CSS #system-layout của bạn)
+                document.getElementById('secLogin').style.display = 'none';
+                document.getElementById('system-layout').style.display = 'flex'; 
+
+                // 2. Ẩn toàn bộ menu bên thanh Sidebar
+                document.querySelectorAll('.nav-link').forEach(l => l.style.display = 'none');
+
+                // 3. Hiển thị menu theo đúng quyền hạn trong CSDL
+                if (authorizedRole === 'CUSTOMER') {
+                    document.getElementById('m-booking').style.display = 'block';
+                } 
+                else if (authorizedRole === 'STYLIST') {
+                    document.getElementById('m-booking').style.display = 'block';
+                    document.getElementById('m-personal').style.display = 'block';
+                } 
+                else if (authorizedRole === 'CASHIER') {
+                    document.getElementById('m-booking').style.display = 'block';
+                    document.getElementById('m-pos').style.display = 'block';
+                    document.getElementById('m-inventory').style.display = 'block';
+                } 
+                else if (authorizedRole === 'MANAGER') {
+                    document.getElementById('m-booking').style.display = 'block';
+                    document.getElementById('m-pos').style.display = 'block';
+                    document.getElementById('m-inventory').style.display = 'block';
+                    document.getElementById('m-personal').style.display = 'block';
+                    document.getElementById('m-tax').style.display = 'block';
+                }
+
+                // Mở sẵn màn hình Đặt Lịch mặc định
+                nav('booking');
+            }
+        })
+        .catch(error => {
+            // Hiện lỗi trực tiếp trên giao diện
+            errorLabel.innerText = error.message;
+            errorLabel.style.display = 'block';
+        });
+    });
+
+    // Hàm điều hướng tab (Giữ nguyên cấu trúc CSS cũ của bạn)
+    function nav(id) {
+        // Ẩn tất cả các khu vực làm việc
+        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+        // Bật khu vực được chọn
+        document.getElementById('view-' + id).classList.remove('hidden');
+        
+        // Cập nhật trạng thái màu sắc trên Sidebar
+        const menuBtn = document.getElementById('m-' + id);
+        if (menuBtn) {
+            menuBtn.classList.add('active');
+            document.getElementById('v-title').innerText = menuBtn.innerText;
         }
+    }
 
-        function initDashboard() {
-            const msg = currentUser.r === 'customer' ? `Chào Nàng, ${currentUser.n}` : `Chào bạn, ${currentUser.n}`;
-            document.getElementById('u-display').innerText = msg;
-            document.querySelectorAll('.nav-link').forEach(l => l.style.display = 'none');
+function addBooking() {
+    const name = document.getElementById('bk-name').value;
+    const phone = document.getElementById('bk-phone').value;
+    const time = document.getElementById('bk-time').value;
 
-            const perms = {
-                admin: ['m-booking', 'm-pos', 'm-inventory', 'm-tax'],
-                stylist: ['m-booking', 'm-personal'],
-                customer: ['m-booking']
-            };
+    if (!name || !phone) {
+        alert("Nàng/Bạn vui lòng điền đủ tên và số điện thoại nhé!");
+        return;
+    }
 
-            perms[currentUser.r].forEach(id => document.getElementById(id).style.display = 'block');
+    const formData = new URLSearchParams();
+    formData.append('name', name);
+    formData.append('phone', phone);
+    formData.append('time', time);
 
-            // QUY ĐỊNH: Thợ tóc không được đặt lịch
-            document.getElementById('bk-input-area').classList.toggle('hidden', currentUser.r === 'stylist');
-            document.getElementById('bk-msg').innerText = currentUser.r === 'admin' ? "Quản lý đặt lịch giùm (SĐT)" : "Đặt lịch làm đẹp trực tuyến";
-
-            let db = getDB();
-            const select = document.getElementById('p-stylist-list');
-            select.innerHTML = '<option value="">-- Chọn thợ chính --</option>' +
-                db.users.filter(x => x.r === 'stylist').map(x => `<option value="${x.n}">${x.n}</option>`).join('');
-
-            nav(perms[currentUser.r][0].replace('m-', ''));
+    // Gọi API xuống Java
+    fetch('../api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert("🌸 Chúc mừng! Lịch hẹn đã được ghi lại thành công.");
+            // Reset form
+            document.getElementById('bk-name').value = "";
+            document.getElementById('bk-phone').value = "";
+            
+            // Nếu bạn muốn hiển thị ngay lên bảng, hãy viết thêm hàm renderBookings() gọi API GET
+        } else {
+            alert("Lỗi: " + data.message);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Không thể kết nối đến máy chủ!");
+    });
+}
 
-        function nav(id) {
-            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('view-' + id).classList.remove('hidden');
-            document.getElementById('m-' + id).classList.add('active');
-            document.getElementById('v-title').innerText = document.getElementById('m-' + id).innerText;
+function loadSchedule() {
+    // Gọi API đã tạo ở Backend
+    fetch('../api/schedule')
+        .then(response => {
+            if (!response.ok) throw new Error('Không thể kết nối API');
+            return response.json();
+        })
+        .then(data => {
+            const tableBody = document.getElementById('schedule-body');
+            tableBody.innerHTML = ""; // Xóa dữ liệu cũ hoặc trạng thái loading
 
-            if (id === 'booking') renderBookings();
-            if (id === 'inventory') renderStockTable();
-            if (id === 'personal') renderMyMoney();
-            if (id === 'tax') renderTaxReports();
-        }
+            if (data.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:20px; color:#999;'>Hôm nay chưa có lịch hẹn nào nà...</td></tr>";
+                return;
+            }
 
-        function addBooking() {
-            const time = document.getElementById('bk-time').value;
-            let db = getDB();
-            if (db.bookings.some(b => b.time === time)) return alert(`⚠️ Giờ ${time} đã có lịch rồi!`);
-
-            // FIX: PHÂN LOẠI NGUỒN GỐC ĐẶT LỊCH
-            const type = currentUser.r === 'admin' ? 'Đặt giùm qua SĐT' : 'Đặt qua Web';
-
-            db.bookings.push({
-                client: document.getElementById('bk-name').value,
-                time,
-                phone: document.getElementById('bk-phone').value,
-                owner: currentUser.n,
-                type: type
+            // Lặp qua danh sách lịch hẹn và tạo dòng cho bảng
+            data.forEach(item => {
+                const row = `
+                    <tr style="border-bottom: 1px solid #fafafa; transition: 0.3s;">
+                        <td style="padding: 15px 10px; color: #666;">${item.time}</td>
+                        <td style="padding: 15px 10px; color: #444; font-weight: 500;">${item.customer_name}</td>
+                        <td style="padding: 15px 10px; color: #666;">${item.phone}</td>
+                        <td style="padding: 15px 10px;">
+                            <span style="background: #fff0f3; color: #ff85a2; padding: 4px 12px; border-radius: 20px; font-size: 0.85em;">
+                                ${item.status}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
             });
-            saveDB(db); renderBookings(); alert("Đã ghi nhận lịch hẹn!");
-            document.getElementById('bk-name').value = ""; document.getElementById('bk-phone').value = "";
+        })
+        .catch(error => {
+            console.error('Lỗi khi tải lịch trình:', error);
+        });
+}
+
+function updateStock() {
+    // 1. Lấy dữ liệu từ các ô input
+    const name = document.getElementById('mat-name').value;
+    const qty = document.getElementById('mat-qty').value;
+    const price = document.getElementById('mat-price').value;
+
+    if (!name || !qty || !price) {
+        alert("Nàng/Bạn vui lòng điền đủ Tên vật tư, Số lượng và Giá nhập nhé!");
+        return;
+    }
+
+    // 2. Đóng gói dữ liệu gửi đi
+    const formData = new URLSearchParams();
+    formData.append('productName', name);
+    formData.append('quantity', qty);
+    formData.append('price', price);
+
+    // 3. Gọi API
+    fetch('../api/inventory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert("📦 " + data.message);
+            // Xóa trắng form sau khi nhập thành công
+            document.getElementById('mat-name').value = "";
+            document.getElementById('mat-qty').value = "";
+            document.getElementById('mat-price').value = "";
+            
+            // TODO: Bạn có thể gọi thêm hàm loadTồnKho() ở đây để bảng bên dưới tự động cập nhật
+        } else {
+            alert("Lỗi: " + data.message);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Không thể kết nối đến máy chủ quản lý kho!");
+    });
+}
 
-        function renderBookings() {
-            let db = getDB();
-            let data = currentUser.r === 'customer' ? db.bookings.filter(x => x.owner === currentUser.n) : db.bookings;
-            document.querySelector('#table-bk tbody').innerHTML = data.map(b => `<tr><td>${b.time}</td><td>${b.client}</td><td>${b.phone || '-'}</td><td><span class="badge ${b.type.includes('SĐT') ? 'bg-pink' : 'bg-blue'}">${b.type}</span></td></tr>`).join('');
+function loadStock() {
+    fetch('../api/stock')
+        .then(response => response.json())
+        .then(data => {
+            const stockBody = document.getElementById('stock-body');
+            stockBody.innerHTML = ""; // Xóa dòng thông báo "Đang tải"
+
+            if (data.length === 0) {
+                stockBody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:20px;'>Kho đang trống nà...</td></tr>";
+                return;
+            }
+
+            data.forEach(item => {
+                // Logic trạng thái dựa trên mức stock_quantity[cite: 1]
+                const statusText = item.qty > 5 ? "Còn hàng" : "Sắp hết hàng";
+                const statusColor = item.qty > 5 ? "#4caf50" : "#ff9800";
+                
+                const row = `
+                    <tr style="border-bottom: 1px solid #fafafa;">
+                        <td style="padding: 15px 10px; color: #444; font-weight: 500;">${item.name}</td>
+                        <td style="padding: 15px 10px; color: #666;">${item.qty}</td>
+                        <td style="padding: 15px 10px; color: #666;">${item.price.toLocaleString()}đ</td>
+                        <td style="padding: 15px 10px;">
+                            <span style="color: ${statusColor}; font-weight: bold;">● ${statusText}</span>
+                        </td>
+                    </tr>
+                `;
+                stockBody.innerHTML += row;
+            });
+        })
+        .catch(error => {
+            console.error('Lỗi tải kho:', error);
+            document.getElementById('stock-body').innerHTML = "<tr><td colspan='4' style='color:red; text-align:center;'>Lỗi kết nối Backend!</td></tr>";
+        });
+}
+
+function saveInvoice() {
+    const amount = document.getElementById('pos-amount').value;
+    const staffId = document.getElementById('pos-staff').value;
+
+    if (!amount || amount <= 0) {
+        alert("Nàng ơi, vui lòng nhập số tiền thanh toán hợp lệ nhé!");
+        return;
+    }
+
+    const formData = new URLSearchParams();
+    formData.append('amount', amount);
+    formData.append('staffId', staffId);
+    formData.append('method', 'Tiền mặt'); // Mặc định hoặc lấy từ giao diện
+
+    fetch('../api/invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert("✅ " + data.message);
+            document.getElementById('pos-amount').value = ""; // Xóa trắng ô tiền
+        } else {
+            alert("Lỗi: " + data.message);
         }
+    })
+    .catch(error => {
+        alert("Không thể kết nối máy chủ POS!");
+    });
+}
 
-        // FIX: CỘNG DỒN DOANH THU CHUẨN
-        function saveInvoice() {
-            const price = parseInt(document.getElementById('p-amount').value);
-            const sName = document.getElementById('p-stylist-list').value;
-            if (!price || !sName) return alert("Nhập đủ tiền và chọn thợ!");
-            let db = getDB();
-            db.invoices.push({ price, stylist: sName, date: new Date().toLocaleDateString() });
-            saveDB(db);
-            alert("Thanh toán thành công! Doanh thu đã được cộng.");
-            document.getElementById('p-amount').value = "";
-            renderTaxReports(); // Cập nhật số liệu ngay
-        }
+function loadReportData() {
+    fetch('../api/report')
+        .then(res => res.json())
+        .then(data => {
+            // Hiển thị số tiền đã định dạng VNĐ[cite: 1]
+            document.getElementById('report-revenue').innerText = data.revenue.toLocaleString() + "đ";
+            document.getElementById('report-expense').innerText = data.expense.toLocaleString() + "đ";
+            document.getElementById('report-tax').innerText = data.tax.toLocaleString() + "đ";
+        })
+        .catch(err => console.error("Lỗi tải báo cáo:", err));
+}
 
-        function updateStock() {
-            const name = document.getElementById('inv-item').value.trim();
-            const qty = parseInt(document.getElementById('inv-q').value);
-            const cost = parseInt(document.getElementById('inv-c').value);
-            if (!name || isNaN(qty)) return alert("Nhập đủ thông tin kho!");
+function exportToExcel() {
+    // Lấy dữ liệu hiện tại từ giao diện
+    const rev = document.getElementById('report-revenue').innerText;
+    const exp = document.getElementById('report-expense').innerText;
+    const tax = document.getElementById('report-tax').innerText;
 
-            let db = getDB();
-            let item = db.stock.find(s => s.name.toLowerCase() === name.toLowerCase());
-            if (item) { item.qty += qty; item.cost = cost; }
-            else { db.stock.push({ name, qty, cost }); }
+    // Tạo nội dung file (chuẩn CSV)[cite: 1]
+    let csvContent = "\ufeff"; // BOM để hiển thị đúng tiếng Việt trong Excel
+    csvContent += "Hạng mục,Số tiền\n";
+    csvContent += `Doanh thu,${rev}\n`;
+    csvContent += `Chi phí,${exp}\n`;
+    csvContent += `Thuế phải nộp (3%),${tax}\n`;
 
-            saveDB(db); renderStockTable(); renderTaxReports(); alert("Đã cập nhật kho!");
-            document.getElementById('inv-item').value = ""; document.getElementById('inv-q').value = ""; document.getElementById('inv-c').value = "";
-        }
+    // Tạo đối tượng tải xuống
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", "Bao_Cao_Thue_TT88.csv");
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click(); // Kích hoạt lệnh tải xuống thực tế
+    document.body.removeChild(link);
+    
+    alert("Đã bắt đầu tải xuống file báo cáo!");
+}
 
-        function renderStockTable() {
-            let db = getDB();
-            const alertBox = document.getElementById('stock-alert-box');
-            document.querySelector('#table-inventory tbody').innerHTML = db.stock.map(s => `<tr><td>${s.name}</td><td><strong>${s.qty}</strong></td><td>${s.cost.toLocaleString()}đ</td><td><span class="badge ${s.qty < 5 ? 'bg-red' : 'bg-green'}">${s.qty < 5 ? 'Sắp hết' : 'Tốt'}</span></td></tr>`).join('');
+function exportTaxReport() {
+    const revenue = document.getElementById('report-revenue').innerText;
+    const expense = document.getElementById('report-expense').innerText;
+    const tax = document.getElementById('report-tax').innerText;
+    const date = new Date().toLocaleDateString('vi-VN');
 
-            const low = db.stock.filter(s => s.qty < 5);
-            if (low.length > 0) {
-                alertBox.className = "alert-box";
-                alertBox.innerHTML = `⚠️ CẢNH BÁO: ${low.map(x => x.name).join(', ')} sắp hết hàng!`;
-            } else alertBox.className = "hidden";
-        }
+    let csvContent = "\ufeff"; 
+    csvContent += "BÁO CÁO THUẾ SALON NÀNG THƠ\n";
+    
+    // Cực kỳ quan trọng: Dấu phẩy sát liền nhau, KHÔNG CÓ KHOẢNG TRẮNG
+    csvContent += `Ngày xuất báo cáo:,${date}\n\n`;
+    csvContent += "Hạng mục,Số tiền\n";
+    
+    // Ép sát dấu ngoặc kép vào ngay sau dấu phẩy để Excel nhận diện chuẩn
+    csvContent += `Doanh thu dịch vụ (POS),"${revenue}"\n`;
+    csvContent += `Chi phí vật tư (Nhập kho),"${expense}"\n`;
+    csvContent += `Thuế phải nộp (3%),"${tax}"\n`;
 
-        function renderMyMoney() {
-            let db = getDB();
-            const total = db.invoices.filter(x => x.stylist === currentUser.n).reduce((s, x) => s + x.price, 0);
-            document.getElementById('stylist-money').innerText = (total * 0.5).toLocaleString() + 'đ';
-        }
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const downloadLink = document.createElement("a");
+    
+    downloadLink.href = url;
+    downloadLink.download = `Bao_Cao_Thue_${date.replace(/\//g, '-')}.csv`;
+    
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 
-        // FIX: TÍNH THUẾ VÀ DOANH THU KHÔNG LỖI
-        function renderTaxReports() {
-            let db = getDB();
-            const rev = db.invoices.reduce((s, x) => s + (parseInt(x.price) || 0), 0);
-            const exp = db.stock.reduce((s, x) => s + (parseInt(x.cost) || 0), 0);
+    alert("🌸 Đã xuất báo cáo sang file Excel");
+}
 
-            document.getElementById('t-rev').innerText = rev.toLocaleString() + 'đ';
-            document.getElementById('t-exp').innerText = exp.toLocaleString() + 'đ';
-            document.getElementById('t-tax').innerText = (rev * 0.03).toLocaleString() + 'đ';
-        }
+// Gọi hàm khi mở tab Báo Cáo Thuế
+document.addEventListener('DOMContentLoaded', loadReportData);
+
+// Gọi hàm ngay khi trang load xong
+document.addEventListener('DOMContentLoaded', loadStock);
+
+// Tự động tải dữ liệu ngay khi trang web được mở xong
+document.addEventListener('DOMContentLoaded', loadSchedule);
+
+// Cập nhật lại danh sách sau khi khách đặt lịch thành công
+// Bạn hãy gọi thêm loadSchedule() vào cuối hàm addBooking() ở bước trước nhé!
     </script>
 </body>
 
